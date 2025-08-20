@@ -1,0 +1,969 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Week 4 Tuesday Practice Quiz</title>
+    <style>
+        /* --- Color Variables --- */
+        :root {
+            /* Default: Dark Theme */
+            --bg-color: #2d343e; /* Dark background */
+            --container-bg: #3c424f; /* Slightly lighter container */
+            --text-color: #e8e6e3; /* Light text */
+            --question-text-color: #8ab4f8; /* Light blue for questions */
+            --lo-text-color: #b0c4de; /* Lighter blue for learning objective */
+            --border-color: #555; /* Darker borders */
+            --separator-color: #4a4f5a;
+            --label-bg: #454c5a;
+            --label-border: #6c757d;
+            --label-hover-bg: #525966;
+            --label-hover-border: #7a828a;
+            --button-bg: #8ab4f8;
+            --button-text: #202124;
+            --button-hover-bg: #a3c5f9;
+            --button-disabled-bg: #5f6368;
+            --feedback-correct-bg: #344e41;
+            --feedback-correct-text: #c7f9cc;
+            --feedback-correct-border: #52b788;
+            --feedback-incorrect-bg: #5e2129;
+            --feedback-incorrect-text: #f8d7da;
+            --feedback-incorrect-border: #a4133c;
+            --feedback-rationale-text: #adb5bd; /* Lighter gray for rationale */
+            --feedback-source-text: #c7d3e0;
+            --feedback-separator: #6c757d;
+            --radio-accent: #8ab4f8;
+        }
+
+        .light-theme {
+            --bg-color: #eef2f7;
+            --container-bg: #ffffff;
+            --text-color: #343a40;
+            --question-text-color: #0056b3;
+            --lo-text-color: #5a6e8a;
+            --border-color: #dee2e6;
+            --separator-color: #e9ecef;
+            --label-bg: #f8f9fa;
+            --label-border: #ced4da;
+            --label-hover-bg: #e2e6ea;
+            --label-hover-border: #adb5bd;
+            --button-bg: #007bff;
+            --button-text: white;
+            --button-hover-bg: #0056b3;
+            --button-disabled-bg: #6c757d;
+            --feedback-correct-bg: #d1e7dd;
+            --feedback-correct-text: #0f5132;
+            --feedback-correct-border: #badbcc;
+            --feedback-incorrect-bg: #f8d7da;
+            --feedback-incorrect-text: #842029;
+            --feedback-incorrect-border: #f5c2c7;
+            --feedback-rationale-text: #495057;
+            --feedback-source-text: #343a40;
+            --feedback-separator: #ccc;
+            --radio-accent: #007bff;
+        }
+
+        /* --- General Styles --- */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+            line-height: 1.7;
+            margin: 0;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            padding-bottom: 40px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        #theme-toggle-button {
+            position: fixed;
+            top: 15px;
+            right: 15px;
+            padding: 8px 12px;
+            background-color: var(--button-bg);
+            color: var(--button-text);
+            border: 1px solid var(--label-border);
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9em;
+            z-index: 1000;
+             transition: background-color 0.3s, color 0.3s;
+        }
+         #theme-toggle-button:hover {
+             opacity: 0.8;
+         }
+
+
+        #quiz-container {
+            max-width: 900px;
+            margin: 80px auto 30px auto;
+            background: var(--container-bg);
+            padding: 25px 35px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            border: 1px solid var(--border-color);
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+
+        .question-block {
+            margin-bottom: 35px;
+            padding-bottom: 25px;
+            border-bottom: 1px solid var(--separator-color);
+            transition: border-color 0.3s;
+        }
+
+        .question-block:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 5px;
+        }
+        
+        .learning-objective {
+            font-size: 0.85em;
+            font-style: italic;
+            color: var(--lo-text-color);
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px dashed var(--separator-color);
+        }
+
+        .question-text {
+            font-weight: 600;
+            font-size: 1.1em;
+            margin-bottom: 18px;
+            color: var(--question-text-color);
+            transition: color 0.3s;
+        }
+
+        .options label {
+            display: block;
+            margin-bottom: 12px;
+            cursor: pointer;
+            padding: 10px 15px;
+            border-radius: 6px;
+            border: 1px solid var(--label-border);
+            background-color: var(--label-bg);
+            transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out;
+        }
+
+        .options label:hover {
+            background-color: var(--label-hover-bg);
+            border-color: var(--label-hover-border);
+        }
+
+        .options input[type="radio"]:checked+span {
+             font-weight: bold;
+             color: var(--question-text-color);
+        }
+        .options input[type="radio"] {
+            margin-right: 12px;
+            accent-color: var(--radio-accent);
+        }
+
+        .button-container {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .check-button {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.95em;
+            transition: background-color 0.2s, color 0.2s, opacity 0.2s;
+            background-color: var(--button-bg);
+            color: var(--button-text);
+        }
+
+        .check-button:hover {
+            opacity: 0.85;
+        }
+
+         .check-button:disabled {
+             background-color: var(--button-disabled-bg);
+             cursor: not-allowed;
+             opacity: 0.7;
+         }
+
+        .feedback {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 6px;
+            font-size: 0.95em;
+            display: none;
+            border: 1px solid transparent;
+            transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+        }
+
+        .feedback.correct {
+            background-color: var(--feedback-correct-bg);
+            color: var(--feedback-correct-text);
+            border-color: var(--feedback-correct-border);
+            display: block;
+        }
+
+        .feedback.incorrect {
+            background-color: var(--feedback-incorrect-bg);
+            color: var(--feedback-incorrect-text);
+            border-color: var(--feedback-incorrect-border);
+            display: block;
+        }
+
+        .feedback-status {
+             font-weight: bold;
+             font-size: 1.1em;
+             display: block;
+             margin-bottom: 8px;
+        }
+
+        .feedback-rationale {
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px dashed var(--feedback-separator);
+            font-size: 0.9em;
+            color: var(--feedback-rationale-text);
+            transition: color 0.3s, border-color 0.3s;
+        }
+        
+        .feedback-source {
+            margin-top: 10px;
+            font-size: 0.85em;
+            font-style: italic;
+            color: var(--feedback-source-text);
+            background-color: rgba(0,0,0,0.1);
+            padding: 8px;
+            border-radius: 4px;
+        }
+
+        h1 {
+            text-align: center;
+            color: var(--question-text-color);
+            margin-top: 30px;
+            margin-bottom: 30px;
+            font-weight: 600;
+            transition: color 0.3s;
+        }
+
+    </style>
+</head>
+<body>
+
+    <button id="theme-toggle-button">Toggle Theme</button>
+    <h1>Week 4 Tuesday Practice Quiz</h1>
+
+    <div id="quiz-container">
+        <!-- Questions will be loaded here by JavaScript -->
+    </div>
+
+    <script>
+        const quizData = [
+            // DNA Recombination Questions
+            {
+                learningObjective: "LO 1 (DNA Recombination): Define recombination, the significance of recombination in living organisms, and describe the four major recombination types.",
+                question: "A scientist is studying genetic exchange in eukaryotes. She observes a process that involves the physical exchange of DNA between two homologous chromosomes, requiring a large region of sequence similarity (>= 50-100 bp). This process is crucial for chromosome segregation during meiosis. Which type of recombination is being observed?",
+                options: { 
+                    A: "Homologous genetic recombination", 
+                    B: "Illegitimate recombination (NHEJ)", 
+                    C: "Transpositional recombination", 
+                    D: "Conservative site-specific recombination" 
+                },
+                correctAnswer: "A",
+                rationale: "Homologous recombination is defined by the exchange of genetic material between two DNA molecules that share a large region of sequence similarity. It is a fundamental process in eukaryotes for repairing double-strand breaks and for ensuring proper chromosome pairing and segregation during meiosis.",
+                source: "'Recombination between two homologous DNA molecules. Requires relatively large (≥ 50-100 bp) regions of sequence similarity... and pairing of homologous chromosomes during meiosis in eukaryotes.' (DNA Recombination, Page 6)"
+            },
+            {
+                learningObjective: "LO 1 (DNA Recombination): Define recombination, the significance of recombination in living organisms, and describe the four major recombination types.",
+                question: "A cell culture is exposed to a chemical that causes numerous double-strand DNA breaks. The cell's repair machinery ligates the broken ends directly together, often resulting in small insertions or deletions at the break site. This process does not use a homologous template for repair. Which type of recombination is this?",
+                options: { 
+                    A: "Homologous recombination", 
+                    B: "Transpositional recombination", 
+                    C: "Conservative site-specific recombination", 
+                    D: "Non-homologous end joining (NHEJ)" 
+                },
+                correctAnswer: "D",
+                rationale: "Non-homologous end joining (NHEJ), also called illegitimate recombination, is a major pathway for repairing double-strand breaks. It is characterized by the direct ligation of broken DNA ends without the need for a homologous template. This process is often error-prone and can lead to small mutations at the repair site.",
+                source: "'Non-homologous end joining (illegitimate recombination)... Break ends are directly ligated without need for template; microhomologies with just one or two base complementarity is used to join the ends.' (DNA Recombination, Pages 5 & 20)"
+            },
+            {
+                learningObjective: "LO 1 (DNA Recombination): Define recombination, the significance of recombination in living organisms, and describe the four major recombination types.",
+                question: "Which of the following is a primary significance of recombination in living organisms, contributing to long-term evolutionary change?",
+                options: { 
+                    A: "It ensures that daughter cells are genetically identical to the parent cell.", 
+                    B: "It prevents any changes in the genomic DNA sequence.", 
+                    C: "It provides genetic variation by allowing for the exchange and reassortment of genes.", 
+                    D: "It exclusively repairs single-strand DNA breaks." 
+                },
+                correctAnswer: "C",
+                rationale: "Recombination is a key driver of genetic diversity. By shuffling alleles between homologous chromosomes during meiosis (reassortment of genes), it creates new combinations of genes in the offspring. This genetic variation is the raw material upon which natural selection acts, allowing populations to adapt and evolve.",
+                source: "'Provides genetic variation by allowing for genetic exchange and reassortment of genes along chromosomes.' (DNA Recombination, Page 4)"
+            },
+            {
+                learningObjective: "LO 2 (DNA Recombination): Discuss the molecular events in homologous recombination and non-homologous end joining and describe the role of these two recombination pathways in double strand-break repair, chromosome segregation, DNA rearrangements leading to gene deletion, duplication, inversions, & translocations, and the generation of antibody diversity.",
+                question: "A patient with severe hemophilia A is found to have a large inversion mutation that disrupts the coagulation factor VIII gene. This type of chromosomal rearrangement is often caused by aberrant homologous recombination between which of the following genomic features?",
+                options: { 
+                    A: "Two different protein-coding exons", 
+                    B: "A promoter and a terminator sequence", 
+                    C: "Repetitive DNA sequences located at different positions on the same chromosome", 
+                    D: "The centromere and a telomere" 
+                },
+                correctAnswer: "C",
+                rationale: "Aberrant or ectopic recombination occurs when homologous recombination happens between repetitive DNA sequences (like LINEs or SINEs) that are not in their correct allelic positions. If this occurs between two inverted repeats on the same chromosome, the intervening segment of DNA will be flipped, resulting in an inversion that can disrupt gene function.",
+                source: "'Errors during homologous recombination (ectopic recombination) cause chromosomal abnormalities and these errors are primarily due to presence of repetitive DNA sequence.' The accompanying diagram shows inverted repeats leading to an inversion. (DNA Recombination, Page 15)"
+            },
+            {
+                learningObjective: "LO 2 (DNA Recombination): Discuss the molecular events in homologous recombination and non-homologous end joining...",
+                question: "During meiosis in a healthy human male, a specific protein is expressed that intentionally creates double-strand breaks in the DNA. This process is essential for initiating homologous recombination and ensuring proper pairing of homologous chromosomes. Which protein is responsible for creating these initial breaks?",
+                options: { 
+                    A: "RecA", 
+                    B: "BRCA1", 
+                    C: "DNA Ligase", 
+                    D: "Spo11" 
+                },
+                correctAnswer: "D",
+                rationale: "Spo11 is a specialized enzyme expressed specifically during meiotic prophase. Its function is to introduce programmed double-strand breaks into the DNA. These breaks are the initiating event for homologous recombination, which is required for the synapsis and segregation of homologous chromosomes.",
+                source: "'A specific protein, Spo11, is expressed during prophase of meiosis which introduces double-strand breaks to initiate recombination.' (DNA Recombination, Page 13)"
+            },
+            {
+                learningObjective: "LO 2 (DNA Recombination): Discuss the molecular events in homologous recombination and non-homologous end joining...",
+                question: "The repair of a double-strand break by non-homologous end joining (NHEJ) can sometimes lead to cancer-causing mutations. A translocation that places a proto-oncogene under the control of a strong, constitutively active promoter from another gene is an example of such a mutation. This type of event is a result of NHEJ repairing a break between which of the following?",
+                options: { 
+                    A: "Two sister chromatids", 
+                    B: "Two homologous chromosomes", 
+                    C: "Two non-homologous chromosomes", 
+                    D: "The start and end of the same chromosome" 
+                },
+                correctAnswer: "C",
+                rationale: "Translocations involve the exchange of genetic material between non-homologous chromosomes. If double-strand breaks occur on two different chromosomes, the NHEJ pathway may incorrectly join the broken ends from the different chromosomes. This can create fusion genes or place a proto-oncogene under inappropriate regulatory control, leading to its overexpression and contributing to cancer.",
+                source: "The diagram on page 22 illustrates a gene rearrangement where a proto-oncogene is placed under the control of a strong promoter from another gene (Gene X), a classic example of translocation. (DNA Recombination, Page 22)"
+            },
+            {
+                learningObjective: "LO 3 (DNA Recombination): Discuss the mechanisms by which RNA transposons produce repetitive DNA and processed pseudogenes in the genome.",
+                question: "A researcher identifies a DNA sequence in the human genome that is highly similar to the coding sequence of a functional gene, but it completely lacks introns and does not have a promoter. This non-functional gene copy was most likely generated by which of the following mechanisms?",
+                options: { 
+                    A: "Unequal crossing-over during meiosis", 
+                    B: "Excision and re-insertion by a DNA transposon", 
+                    C: "Reverse transcription of a mature mRNA followed by integration into the genome", 
+                    D: "A point mutation in the start codon of the original gene" 
+                },
+                correctAnswer: "C",
+                rationale: "Processed pseudogenes are created by retrotransposition. A mature mRNA from a functional gene, which has already had its introns spliced out, is reverse-transcribed into a complementary DNA (cDNA) copy. This cDNA is then integrated back into the genome at a random location. The resulting sequence lacks introns and a promoter, rendering it non-functional.",
+                source: "'Poly-A retrotransposons can give rise to processed pseudogenes... Pseudogenes formed by this process are called processed pseudogenes... and may be identified in the chromosomal DNA by: 1. Lack of promoter 2. Lack of introns' (DNA Recombination, Pages 31-32)"
+            },
+            {
+                learningObjective: "LO 3 (DNA Recombination): Discuss the mechanisms by which RNA transposons produce repetitive DNA and processed pseudogenes in the genome.",
+                question: "The movement of RNA transposons (retrotransposons) is often described as a 'copy and paste' mechanism. This is because the original transposon sequence remains in its location while a new copy is inserted elsewhere. This mechanism requires the activity of which key enzyme encoded by autonomous retrotransposons?",
+                options: { 
+                    A: "DNA polymerase", 
+                    B: "Transposase", 
+                    C: "Reverse transcriptase", 
+                    D: "DNA ligase" 
+                },
+                correctAnswer: "C",
+                rationale: "The 'copy and paste' mechanism of retrotransposons involves an RNA intermediate. The transposon DNA is transcribed into RNA, and this RNA is then used as a template by the enzyme reverse transcriptase to create a new DNA copy. This DNA copy is then inserted into a new location in the genome.",
+                source: "'RNA transposons (Retrotransposons)- makes up ~42% of the human genome. These move by “copy and paste” mechanism... Movement involves the reverse transcription of RNA of the transposon into complementary DNA.' (DNA Recombination, Page 26)"
+            },
+            {
+                learningObjective: "LO 3 (DNA Recombination): Discuss the mechanisms by which RNA transposons produce repetitive DNA and processed pseudogenes in the genome.",
+                question: "The human genome contains approximately one million copies of the Alu element, a non-autonomous retrotransposon. Because Alu elements do not encode their own enzymes, what do they rely on for their mobilization and insertion into new genomic locations?",
+                options: { 
+                    A: "The cell's DNA repair machinery", 
+                    B: "Enzymes encoded by autonomous retrotransposons, such as L1", 
+                    C: "The spliceosome complex", 
+                    D: "Homologous recombination with other Alu elements" 
+                },
+                correctAnswer: "B",
+                rationale: "Non-autonomous transposons like Alu have the necessary sequences for recognition but have lost the ability to produce their own transposition enzymes. They are 'parasites of parasites,' relying on the machinery produced by autonomous elements. The Alu element's RNA transcript is recognized and reverse-transcribed by the reverse transcriptase and endonuclease encoded by the autonomous L1 retrotransposon.",
+                source: "'The Alu transposon on the other hand is a nonautonomous poly-A transposon which does not code for any protein. It depends on the mRNA-binding protein and reverse transcriptase encoded by the L1 autonomous transposon to produce a DNA copy of itself...' (DNA Recombination, Page 25)"
+            },
+            {
+                learningObjective: "LO 4 (DNA Recombination): Discuss the significance of recombination events in the generation of antibody diversity.",
+                question: "During the development of a B-lymphocyte, a vast repertoire of antibody molecules is generated from a limited number of gene segments. The process of joining different V, D, and J gene segments together to form the variable region of an antibody is an example of which type of recombination?",
+                options: { 
+                    A: "General homologous recombination", 
+                    B: "Transpositional recombination", 
+                    C: "Site-specific recombination (V(D)J recombination)", 
+                    D: "Gene conversion" 
+                },
+                correctAnswer: "C",
+                rationale: "V(D)J recombination is a specialized form of site-specific recombination that occurs only in developing lymphocytes. It involves the precise cutting and joining of different gene segments (Variable, Diversity, and Joining) to assemble a unique gene encoding the variable region of an antibody or T-cell receptor. This combinatorial diversity is a primary source of the immune system's vast repertoire.",
+                source: "'Antibody diversity is generated by two mechanisms: 1. By joining gene segments [V(D)J recombination]...' (DNA Recombination, Page 36)"
+            },
+            {
+                learningObjective: "LO 4 (DNA Recombination): Discuss the significance of recombination events in the generation of antibody diversity.",
+                question: "After the V, D, and J gene segments are cut during antibody gene rearrangement, a double-strand break is created. The joining of these segments is mediated by an error-prone repair pathway that often adds or removes nucleotides at the junctions, further increasing antibody diversity. Which repair pathway is responsible for joining these segments?",
+                options: { 
+                    A: "Homologous recombination (HR)", 
+                    B: "Non-homologous end joining (NHEJ)", 
+                    C: "Base excision repair (BER)", 
+                    D: "Mismatch repair (MMR)" 
+                },
+                correctAnswer: "B",
+                rationale: "The double-strand breaks created during V(D)J recombination are repaired by the non-homologous end joining (NHEJ) pathway. This pathway is inherently imprecise. The processing of the DNA ends before ligation often involves the addition of random 'N' nucleotides and the deletion of others, creating unique sequences at the V-D and D-J junctions. This is known as junctional diversity.",
+                source: "'Junctional diversity provided by the error prone NHEJ during the joining of the two gene segments.' (DNA Recombination, Page 36)"
+            },
+            {
+                learningObjective: "LO 4 (DNA Recombination): Discuss the significance of recombination events in the generation of antibody diversity.",
+                question: "The mechanism by which the intervening DNA between two gene segments is removed during V(D)J recombination involves the formation of a circular fragment that is subsequently degraded. This excision process is mechanistically similar to which of the following?",
+                options: { 
+                    A: "DNA replication", 
+                    B: "Excision by a DNA transposon", 
+                    C: "mRNA splicing", 
+                    D: "Telomere extension" 
+                },
+                correctAnswer: "B",
+                rationale: "V(D)J recombination occurs between specific consensus sequences arranged as inverted repeats, which is similar to the ends of a transposon. The enzymatic machinery cuts the DNA and excises the intervening segment as a circular piece, leaving a double-strand break to be repaired. This is analogous to the 'cut and paste' mechanism of DNA transposon excision.",
+                source: "'Mechanism of deletion is similar to transposon excision. Deleted region is excised as a circular fragment and degraded.' (DNA Recombination, Page 36)"
+            },
+            // Bacterial Genetics & Virulence Determinants Questions
+            {
+                learningObjective: "LO 1 (Bacterial Genetics): Describe mechanisms of genetic exchange in bacteria.",
+                question: "A laboratory experiment is performed where a strain of Streptococcus pneumoniae that is sensitive to penicillin is mixed with heat-killed, encapsulated, penicillin-resistant S. pneumoniae. After incubation, some of the living sensitive bacteria are found to have become penicillin-resistant and encapsulated. This genetic change most likely occurred through which process?",
+                options: { 
+                    A: "Conjugation", 
+                    B: "Transduction", 
+                    C: "Transformation", 
+                    D: "Transposition" 
+                },
+                correctAnswer: "C",
+                rationale: "Transformation is the process by which bacteria take up free DNA from their environment. In this classic experiment (Griffith's experiment), the living, non-encapsulated bacteria took up DNA fragments released from the heat-killed encapsulated bacteria. This DNA contained the genes for capsule formation and penicillin resistance, which were then incorporated into the recipient's chromosome by homologous recombination.",
+                source: "'Uptake and incorporation of free DNA by competent bacteria.' The diagram on page 11 shows DNA being liberated from dead cells and taken up by adjacent cells. (Bacterial DNA exchange, Pages 10 & 11)"
+            },
+            {
+                learningObjective: "LO 1 (Bacterial Genetics): Describe mechanisms of genetic exchange in bacteria.",
+                question: "A researcher mixes two strains of E. coli in a liquid culture. Strain A is an Hfr strain, and Strain B is an F- strain. After incubation, a sample of Strain B is found to have incorporated some chromosomal genes from Strain A, but the majority of Strain B cells remain F-. This one-way transfer of chromosomal DNA requiring direct cell-to-cell contact is known as:",
+                options: { 
+                    A: "Transformation", 
+                    B: "Conjugation", 
+                    C: "Generalized Transduction", 
+                    D: "Specialized Transduction" 
+                },
+                correctAnswer: "B",
+                rationale: "Conjugation is the transfer of genetic material between bacterial cells through direct contact, often via a pilus. In Hfr conjugation, the F factor is integrated into the chromosome, and during conjugation, a portion of the chromosome is transferred along with the F factor. Because the entire chromosome is rarely transferred, the recipient usually remains F- but can become a recombinant.",
+                source: "'Transfer of DNA from one bacterial cell directly to another (also known as bacterial mating)... Requires cell-to-cell contact.' (Bacterial DNA exchange, Page 17 & 23)"
+            },
+            {
+                learningObjective: "LO 1 (Bacterial Genetics): Describe mechanisms of genetic exchange in bacteria.",
+                question: "A scientist is studying a bacterial culture and adds DNase, an enzyme that degrades extracellular DNA, to the growth medium. Which of the following mechanisms of horizontal gene transfer would be specifically inhibited by the presence of DNase?",
+                options: { 
+                    A: "Conjugation", 
+                    B: "Transformation", 
+                    C: "Transduction", 
+                    D: "Transposition" 
+                },
+                correctAnswer: "B",
+                rationale: "Transformation relies on the uptake of 'free' or 'naked' DNA from the environment. Because this DNA is extracellular before being taken up by a competent cell, it is susceptible to degradation by enzymes like DNase present in the medium. Conjugation and transduction protect the transferred DNA within a pilus or a phage particle, respectively, making them insensitive to external DNase.",
+                source: "'Transformation (summary)... Sensitive to external deoxyribonuclease (DNase)' (Bacterial DNA exchange, Page 16)"
+            },
+            {
+                learningObjective: "LO 2 (Bacterial Genetics): Explain how antibiotic resistance can be transmitted among bacteria.",
+                question: "A plasmid carrying a gene for chloramphenicol resistance (CmR) also contains a transposon. This transposon 'jumps' from the plasmid to the bacterial chromosome. The bacterium then loses the plasmid during cell division. The resulting bacterium will have which of the following phenotypes?",
+                options: { 
+                    A: "Chloramphenicol sensitive, as the resistance gene was on the lost plasmid.", 
+                    B: "Chloramphenicol resistant, as the resistance gene is now on the chromosome.", 
+                    C: "The resistance phenotype will be unstable and lost in subsequent generations.", 
+                    D: "The bacterium will be unable to replicate its chromosome." 
+                },
+                correctAnswer: "B",
+                rationale: "Transposons are mobile genetic elements that can move genes from one DNA molecule to another within a cell. When the transposon carrying the CmR gene moves from the plasmid to the chromosome, the resistance gene becomes a stable part of the bacterial chromosome. Even if the original plasmid is lost, the cell and its progeny will remain chloramphenicol resistant.",
+                source: "The diagram on page 6 shows a transposon with a CmR gene moving from a plasmid to the chromosome, illustrating that the gene can be stably maintained in the chromosome. (Bacterial DNA exchange, Page 6)"
+            },
+            {
+                learningObjective: "LO 2 (Bacterial Genetics): Explain how antibiotic resistance can be transmitted among bacteria.",
+                question: "In a hospital setting, a strain of Klebsiella pneumoniae rapidly acquires resistance to multiple antibiotics from a resistant strain of E. coli present in the same patient. This rapid transfer of multi-drug resistance is most efficiently mediated by which of the following?",
+                options: { 
+                    A: "A single transposon", 
+                    B: "Generalized transduction", 
+                    C: "A conjugative R plasmid", 
+                    D: "Natural transformation" 
+                },
+                correctAnswer: "C",
+                rationale: "R (resistance) plasmids are conjugative plasmids that carry genes conferring resistance to multiple antibiotics. Conjugation is a highly efficient mechanism for transferring these plasmids between different bacterial species, allowing for the rapid spread of multi-drug resistance in a population.",
+                source: "'Transposons can insert into either chromosomal or plasmid DNA... “R plasmid” Transmission to other bacteria' (Bacterial DNA exchange, Page 6)"
+            },
+            {
+                learningObjective: "LO 2 (Bacterial Genetics): Explain how antibiotic resistance can be transmitted among bacteria.",
+                question: "Which mechanism of horizontal gene transfer is responsible for moving antibiotic resistance genes from the chromosome of one bacterium to a plasmid in another bacterium, facilitating its spread?",
+                options: { 
+                    A: "Transposition followed by conjugation", 
+                    B: "Transformation only", 
+                    C: "Vertical transmission only", 
+                    D: "Specialized transduction only" 
+                },
+                correctAnswer: "A",
+                rationale: "Transposons play a crucial role in mobilizing antibiotic resistance genes. A transposon can move a resistance gene from the chromosome to a plasmid. This plasmid can then be transferred to other bacteria via conjugation, effectively spreading the resistance gene throughout the bacterial population.",
+                source: "The diagram on page 6 shows a transposon moving from a chromosome to a plasmid, which is then labeled as an 'R plasmid' capable of 'Transmission to other bacteria'. This illustrates the two-step process. (Bacterial DNA exchange, Page 6)"
+            },
+            {
+                learningObjective: "LO 3 (Bacterial Genetics): Describe how bacteriophages can spread virulence factors and contribute to the evolution of bacterial pathogens.",
+                question: "A non-toxigenic strain of Corynebacterium diphtheriae becomes capable of producing diphtheria toxin after being infected with a specific bacteriophage. The gene for the toxin is carried by the phage and integrates into the bacterial chromosome. This phenomenon is an example of:",
+                options: { 
+                    A: "Plasmid conjugation", 
+                    B: "Transformation", 
+                    C: "Lysogenic conversion", 
+                    D: "Transposition" 
+                },
+                correctAnswer: "C",
+                rationale: "Lysogenic conversion occurs when a temperate bacteriophage infects a bacterium, and its DNA (as a prophage) becomes integrated into the host's genome. If the prophage carries genes for virulence factors, such as the diphtheria toxin, the host bacterium's phenotype is changed, and it becomes pathogenic.",
+                source: "'Some toxins are found on lysogenic bacteriophages. These toxins can be spread to non-toxin-producing strains. Examples: ...Diphtheria toxin...' (Bacterial DNA exchange, Page 29)"
+            },
+            {
+                learningObjective: "LO 3 (Bacterial Genetics): Describe how bacteriophages can spread virulence factors and contribute to the evolution of bacterial pathogens.",
+                question: "A patient with an EHEC O157:H7 infection is treated with ciprofloxacin, a DNA-damaging antibiotic. The patient's condition worsens, and they develop hemolytic uremic syndrome (HUS). The antibiotic treatment likely exacerbated the disease by which mechanism?",
+                options: { 
+                    A: "Inducing the lytic cycle of a Shiga toxin-encoding prophage", 
+                    B: "Selecting for antibiotic-resistant bacteria", 
+                    C: "Inhibiting protein synthesis in the host", 
+                    D: "Causing an allergic reaction" 
+                },
+                correctAnswer: "A",
+                rationale: "The gene for Shiga toxin is carried on a temperate prophage in EHEC. DNA-damaging agents, like quinolone antibiotics (e.g., ciprofloxacin), can trigger the SOS response in bacteria, which induces the prophage to enter the lytic cycle. This leads to massive replication of the phage and a corresponding increase in the production and release of Shiga toxin, worsening the disease.",
+                source: "'Treatment of EHEC infections with some antimicrobial agents (e.g. DNA-damaging quinolones) can worsen disease.' and 'Induction - can be caused by DNA damaging agents' (referring to prophage). (Bacterial DNA exchange, Pages 32 & 28)"
+            },
+            {
+                learningObjective: "LO 3 (Bacterial Genetics): Describe how bacteriophages can spread virulence factors and contribute to the evolution of bacterial pathogens.",
+                question: "During the lytic cycle of a bacteriophage, the host bacterial chromosome is degraded into fragments. Occasionally, a fragment of this bacterial DNA is mistakenly packaged into a new phage head instead of the phage's own genome. This phage is now capable of transferring that bacterial DNA to another cell. This process is known as:",
+                options: { 
+                    A: "Specialized transduction", 
+                    B: "Conjugation", 
+                    C: "Generalized transduction", 
+                    D: "Transformation" 
+                },
+                correctAnswer: "C",
+                rationale: "Generalized transduction is the transfer of any segment of bacterial DNA from one bacterium to another by a bacteriophage. It occurs when random pieces of the host chromosome are accidentally packaged into phage particles during the lytic cycle. These 'defective' phages can then inject this bacterial DNA into a new host.",
+                source: "'Generalized transduction - any segment of chromosomal DNA can be transferred.' The diagram on page 26 illustrates this process. (Bacterial DNA exchange, Pages 34 & 26)"
+            },
+            // Transcription Questions
+            {
+                learningObjective: "LO 1 (Transcription): Summarize the initiation, elongation, and termination of transcription, comparing and contrasting these processes in eukaryotic and prokaryotic cells.",
+                question: "In prokaryotic transcription initiation, the RNA polymerase holoenzyme recognizes and binds to specific consensus sequences upstream of the transcription start site. Which subunit of the holoenzyme is directly responsible for this specific promoter recognition?",
+                options: { 
+                    A: "Alpha (α) subunit", 
+                    B: "Beta (β) subunit", 
+                    C: "Beta-prime (β') subunit", 
+                    D: "Sigma (σ) subunit" 
+                },
+                correctAnswer: "D",
+                rationale: "The RNA polymerase core enzyme (2αββ'ω) can transcribe DNA but lacks promoter specificity. The sigma (σ) factor associates with the core enzyme to form the holoenzyme. The sigma factor is responsible for recognizing and binding to the -10 (Pribnow box) and -35 promoter elements, thereby directing the polymerase to the correct start site.",
+                source: "'σ subunit directs RNAP core enzyme to a specific promoter.' and 'Sigma factor recognizes specific -10 and -35 bp sequences'. (Transcription, Pages 7 & 10)"
+            },
+            {
+                learningObjective: "LO 1 (Transcription): Summarize the initiation, elongation, and termination of transcription, comparing and contrasting these processes in eukaryotic and prokaryotic cells.",
+                question: "A major difference between transcription in prokaryotes and eukaryotes is the cellular location where transcription and translation occur. Which of the following statements accurately describes this difference?",
+                options: { 
+                    A: "In prokaryotes, both processes occur in the nucleus; in eukaryotes, they both occur in the cytoplasm.", 
+                    B: "In prokaryotes, transcription and translation are coupled in the cytoplasm; in eukaryotes, they are spatially and temporally separated.", 
+                    C: "In prokaryotes, transcription occurs in the cytoplasm and translation in the nucleus; in eukaryotes, the opposite is true.", 
+                    D: "In both prokaryotes and eukaryotes, transcription and translation are coupled and occur in the cytoplasm." 
+                },
+                correctAnswer: "B",
+                rationale: "Prokaryotes lack a nucleus, so transcription and translation occur in the same cellular compartment (the cytoplasm). In fact, they are often coupled, with ribosomes beginning to translate an mRNA molecule while it is still being transcribed. In eukaryotes, transcription occurs in the nucleus, and the resulting pre-mRNA is processed before being exported to the cytoplasm for translation.",
+                source: "'Transcription and translation are spatially and temporally coupled in prokaryotes.' vs. 'Transcription and translation are spatially and temporally separated in eukaryotes.' (Transcription, Pages 7 & 15)"
+            },
+            {
+                learningObjective: "LO 1 (Transcription): Summarize the initiation, elongation, and termination of transcription, comparing and contrasting these processes in eukaryotic and prokaryotic cells.",
+                question: "In eukaryotic transcription initiation by RNA Polymerase II, the assembly of the preinitiation complex begins with the binding of a general transcription factor to the TATA box. Which transcription factor is responsible for this initial recognition step?",
+                options: { 
+                    A: "TFIIB", 
+                    B: "TFIIH", 
+                    C: "TFIID (containing TATA-binding protein, TBP)", 
+                    D: "TFIIE" 
+                },
+                correctAnswer: "C",
+                rationale: "The initiation of transcription by RNA Pol II requires a set of general transcription factors. The process begins with the recognition of the TATA box promoter element by the TATA-binding protein (TBP), which is a subunit of the larger TFIID complex. The binding of TFIID/TBP to the promoter nucleates the assembly of the rest of the preinitiation complex.",
+                source: "'TATA-binding protein (TBP) initiates the assembly of RNAP II at promoter.' (The diagram shows TBP as part of TFIID binding first). (Transcription, Page 18)"
+            },
+            {
+                learningObjective: "LO 2 (Transcription): Identify the molecular target of the anti-tuberculosis drug rifampin and the mushroom toxin α-amanitin.",
+                question: "A patient with tuberculosis is treated with rifampin. This antibiotic is effective because it specifically inhibits the RNA polymerase of Mycobacterium tuberculosis, preventing transcription. Rifampin binds to which subunit of the prokaryotic RNA polymerase?",
+                options: { 
+                    A: "Alpha (α) subunit", 
+                    B: "Beta (β) subunit", 
+                    C: "Sigma (σ) subunit", 
+                    D: "Omega (ω) subunit" 
+                },
+                correctAnswer: "B",
+                rationale: "Rifampin is a potent inhibitor of bacterial RNA polymerase. Its mechanism of action involves binding to the beta (β) subunit of the RNAP core enzyme. This binding site is adjacent to the active center and physically blocks the path of the elongating RNA chain, preventing it from extending beyond 2-3 nucleotides.",
+                source: "'Rifampicin inhibits bacterial RNAP by binding to its beta-subunit adjacent to the active center.' (Transcription, Page 8)"
+            },
+            {
+                learningObjective: "LO 2 (Transcription): Identify the molecular target of the anti-tuberculosis drug rifampin and the mushroom toxin α-amanitin.",
+                question: "A person ingests Amanita phalloides, the 'death cap' mushroom, and develops severe liver and kidney failure. The primary toxin responsible, α-amanitin, is a potent inhibitor of a specific eukaryotic RNA polymerase. Which RNA polymerase is most sensitive to inhibition by α-amanitin?",
+                options: { 
+                    A: "RNA Polymerase I", 
+                    B: "RNA Polymerase II", 
+                    C: "RNA Polymerase III", 
+                    D: "Mitochondrial RNA Polymerase" 
+                },
+                correctAnswer: "B",
+                rationale: "α-amanitin is a cyclic octapeptide that acts as a powerful and specific inhibitor of eukaryotic RNA Polymerase II. RNA Pol II is responsible for synthesizing all messenger RNAs (mRNAs). Inhibition of this enzyme halts protein synthesis, leading to widespread cell death, particularly in metabolically active organs like the liver and kidneys.",
+                source: "'Inhibitor of eukaryotic RNAP II (and RNAP III at high doses)' (Transcription, Page 17)"
+            },
+            {
+                learningObjective: "LO 2 (Transcription): Identify the molecular target of the anti-tuberculosis drug rifampin and the mushroom toxin α-amanitin.",
+                question: "A researcher is using α-amanitin in an in vitro transcription assay to distinguish between the activities of the three eukaryotic RNA polymerases. She observes that the synthesis of mRNA is completely blocked, while the synthesis of rRNA is unaffected. What is the most likely effect on the synthesis of tRNA in this experiment?",
+                options: { 
+                    A: "tRNA synthesis will be completely blocked.", 
+                    B: "tRNA synthesis will be unaffected.", 
+                    C: "tRNA synthesis will be partially inhibited, but only at high concentrations of α-amanitin.", 
+                    D: "tRNA synthesis will be significantly increased to compensate." 
+                },
+                correctAnswer: "C",
+                rationale: "The eukaryotic RNA polymerases have differential sensitivity to α-amanitin. RNA Pol II (synthesizes mRNA) is highly sensitive. RNA Pol I (synthesizes most rRNA) is insensitive. RNA Pol III (synthesizes tRNA and 5S rRNA) is moderately sensitive, meaning it is inhibited only at concentrations of the toxin that are much higher than those required to inhibit RNA Pol II.",
+                source: "'Differential sensitivity of RNAP types to small molecule inhibitors.' and 'Inhibitor of eukaryotic RNAP II (and RNAP III at high doses)' (Transcription, Pages 15 & 17)"
+            },
+            {
+                learningObjective: "LO 3 (Transcription): Describe the post-transcriptional processing of eukaryotic mRNA and explain how diseases may result from alterations in the processing steps and cite examples.",
+                question: "A patient is diagnosed with a form of β-thalassemia caused by a mutation in the β-globin gene. The mutation creates a new, cryptic splice site within an intron. This leads to the inclusion of a portion of the intron in the mature mRNA. This type of mutation is best described as an error in which of the following processes?",
+                options: { 
+                    A: "Transcription initiation", 
+                    B: "5' capping", 
+                    C: "Polyadenylation", 
+                    D: "mRNA splicing" 
+                },
+                correctAnswer: "D",
+                rationale: "mRNA splicing is the process of removing non-coding introns and joining coding exons to produce a mature mRNA. The accuracy of this process depends on the recognition of specific sequences at the exon-intron boundaries (splice sites). A mutation that creates a new splice site can cause the spliceosome to incorrectly remove or include sequences, leading to an aberrant mRNA and a non-functional protein, as seen in some thalassemias.",
+                source: "'Subject to strict regulation; errors are often associated with phenotypical changes as well as clinical disorders.' This statement is in the context of the four steps of post-transcriptional processing, including splicing. (Transcription, Page 24)"
+            },
+            {
+                learningObjective: "LO 3 (Transcription): Describe the post-transcriptional processing of eukaryotic mRNA and explain how diseases may result from alterations in the processing steps and cite examples.",
+                question: "The 5' cap on eukaryotic mRNA serves several critical functions. Which of the following is NOT a primary function of the 5' cap?",
+                options: { 
+                    A: "Promotion of mRNA translation", 
+                    B: "Prevention of mRNA degradation by exonucleases", 
+                    C: "Regulation of nuclear mRNA export", 
+                    D: "Serving as the termination signal for transcription" 
+                },
+                correctAnswer: "D",
+                rationale: "The 5' cap is added co-transcriptionally and is essential for nuclear export, protection from degradation, and recognition by the ribosome to initiate translation. Transcription termination is signaled by sequences near the 3' end of the transcript, such as the polyadenylation signal, not by the 5' cap.",
+                source: "'The 5' cap has 3 main functions: Regulation of nuclear mRNA export, Prevention of mRNA degradation, Promotion of mRNA translation.' (Transcription, Page 25)"
+            },
+            {
+                learningObjective: "LO 3 (Transcription): Describe the post-transcriptional processing of eukaryotic mRNA and explain how diseases may result from alterations in the processing steps and cite examples.",
+                question: "The spliceosome, the large molecular machine that carries out mRNA splicing, is composed of several small nuclear RNAs (snRNAs) complexed with proteins. These complexes are known as:",
+                options: { 
+                    A: "Ribosomes", 
+                    B: "Proteasomes", 
+                    C: "Small nuclear ribonucleoproteins (snRNPs)", 
+                    D: "Transcription factors" 
+                },
+                correctAnswer: "C",
+                rationale: "The spliceosome is a dynamic complex built from smaller components called small nuclear ribonucleoproteins, or snRNPs (pronounced 'snurps'). Each snRNP consists of a specific snRNA molecule (e.g., U1, U2, U4, U5, U6) and a set of associated proteins. These snRNPs recognize the splice sites and catalyze the splicing reaction.",
+                source: "'Most eukaryotic mRNAs are spliced by the spliceosome, a complex of small nuclear ribonucleoproteins. The spliceosome consists of five small nuclear RNAs (snRNA) and a range of associated proteins.' (Transcription, Page 28)"
+            },
+            {
+                learningObjective: "LO 4 (Transcription): Identify the transcriptional defects that may occur in systemic lupus erythematosus and the autosomal dominant form of retinitis pigmentosa, and how this knowledge can be used to develop therapeutics.",
+                question: "A patient presents with a butterfly rash on her face, joint pain, and photosensitivity. Laboratory tests reveal the presence of anti-nuclear antibodies, specifically anti-Sm and anti-snRNP antibodies. This patient's autoimmune disease, systemic lupus erythematosus (SLE), involves the production of autoantibodies that target components of which cellular machinery?",
+                options: { 
+                    A: "The ribosome", 
+                    B: "The proteasome", 
+                    C: "The spliceosome", 
+                    D: "The DNA replication fork" 
+                },
+                correctAnswer: "C",
+                rationale: "A hallmark of SLE is the production of autoantibodies against various nuclear components. Anti-snRNP and anti-Sm antibodies are highly specific for SLE. These antibodies target the small nuclear ribonucleoproteins (snRNPs) and the Sm complex, which are core components of the spliceosome involved in pre-mRNA processing.",
+                source: "'anti-snRNP antibodies, anti-Sm antibodies... U1, U2, U4 and U5 snRNP biogenesis, Sm complex.' (Transcription, Page 36)"
+            },
+            {
+                learningObjective: "LO 4 (Transcription): Identify the transcriptional defects that may occur in systemic lupus erythematosus and the autosomal dominant form of retinitis pigmentosa, and how this knowledge can be used to develop therapeutics.",
+                question: "A patient is diagnosed with an autosomal dominant form of retinitis pigmentosa (adRP), a degenerative eye disease. Genetic analysis reveals a mutation in the PRPF31 gene. The protein product of this gene is a component of which cellular process?",
+                options: { 
+                    A: "DNA replication", 
+                    B: "Translation initiation", 
+                    C: "Pre-mRNA splicing", 
+                    D: "Vesicular transport" 
+                },
+                correctAnswer: "C",
+                rationale: "Several genes implicated in autosomal dominant retinitis pigmentosa, including PRPF31, PRPF8, and PRPF3, encode pre-mRNA processing factors (PRPFs). These proteins are essential components of the spliceosome. The high metabolic and protein processing demands of photoreceptor cells, particularly for rhodopsin, may make them especially vulnerable to defects in the splicing machinery.",
+                source: "'Among the 12 autosomal dominant RP (adRP) genes, 4 encode for proteins involved in pre-mRNA splicing. pre-mRNA processing factors (PRPF): PRPF31, PRPF8, PRPF3 and PAP1.' (Transcription, Page 34)"
+            },
+            {
+                learningObjective: "LO 4 (Transcription): Identify the transcriptional defects that may occur in systemic lupus erythematosus and the autosomal dominant form of retinitis pigmentosa, and how this knowledge can be used to develop therapeutics.",
+                question: "The influenza virus replicates within the host cell nucleus. To ensure its own mRNAs are efficiently translated, it utilizes a 'cap snatching' mechanism. This process involves the viral polymerase stealing the 5' cap from which of the following molecules?",
+                options: { 
+                    A: "Host cell pre-mRNAs", 
+                    B: "Host cell tRNAs", 
+                    C: "Host cell ribosomal RNAs", 
+                    D: "Viral genomic RNA" 
+                },
+                correctAnswer: "A",
+                rationale: "The influenza virus endonuclease cleaves the 5' capped ends from host cell pre-mRNAs. These capped fragments are then used as primers by the viral polymerase to initiate transcription of its own genome, resulting in viral mRNAs that have a host-derived 5' cap. This allows the viral mRNAs to be recognized and translated by the host cell's ribosomes.",
+                source: "'The RNA of the influenza virus steals the cap of the host mRNA.' (The diagram shows 'cap snatching' from the host mRNA). (Transcription, Page 26)"
+            },
+            // Genetic Code & Translation Questions
+            {
+                learningObjective: "LO 1 (Genetic Code & Translation): Discuss the salient features of the genetic code and name the different types of mutations and its potential effect on structure and function of the mutated protein.",
+                question: "A point mutation in a gene changes a codon from AGA to AGG. Both of these codons specify the amino acid arginine. What type of mutation is this?",
+                options: { 
+                    A: "Nonsense mutation", 
+                    B: "Missense mutation", 
+                    C: "Frameshift mutation", 
+                    D: "Silent mutation" 
+                },
+                correctAnswer: "D",
+                rationale: "The genetic code is degenerate, meaning that most amino acids are specified by more than one codon. A silent mutation is a point mutation that changes a single nucleotide but does not change the amino acid sequence that is produced. Since both AGA and AGG code for arginine, the resulting protein is unchanged.",
+                source: "'AGA to AGG: both code for Arg; called a silent mutation.' (Genetic Code & Translation, Page 6)"
+            },
+            {
+                learningObjective: "LO 1 (Genetic Code & Translation): Discuss the salient features of the genetic code and name the different types of mutations and its potential effect on structure and function of the mutated protein.",
+                question: "A single nucleotide deletion occurs within the coding sequence of a gene. This type of mutation will most likely result in which of the following?",
+                options: { 
+                    A: "A single amino acid substitution", 
+                    B: "A silent mutation with no effect on the protein", 
+                    C: "A frameshift mutation leading to a completely altered C-terminal sequence", 
+                    D: "The deletion of a single amino acid from the protein" 
+                },
+                correctAnswer: "C",
+                rationale: "The genetic code is read in non-overlapping triplets (codons). The deletion of a single base shifts the reading frame for all subsequent codons. This frameshift mutation alters every amino acid downstream of the deletion and often leads to the premature introduction of a stop codon, resulting in a truncated and non-functional protein.",
+                source: "'When addition or deletion is not in multiples of three, it results in shifting of the reading frame- frame shift mutation. The amino acid sequence... towards the C-terminal end will be different from the wildtype protein.' (Genetic Code & Translation, Page 6)"
+            },
+            {
+                learningObjective: "LO 1 (Genetic Code & Translation): Discuss the salient features of the genetic code and name the different types of mutations and its potential effect on structure and function of the mutated protein.",
+                question: "A mutation changes a codon for arginine (AGA) to a stop codon (UGA). This results in the production of a shortened, non-functional protein. What is the specific name for this type of point mutation?",
+                options: { 
+                    A: "Silent mutation", 
+                    B: "Conservative missense mutation", 
+                    C: "Frameshift mutation", 
+                    D: "Nonsense mutation" 
+                },
+                correctAnswer: "D",
+                rationale: "A nonsense mutation is a point mutation that results in a premature stop codon (UAA, UAG, or UGA). This causes the ribosome to terminate translation early, leading to a truncated protein that is usually non-functional.",
+                source: "'AGA to UGA: codon for Arg is replaced by a stop codon, results in the premature termination of protein; called a nonsense mutation.' (Genetic Code & Translation, Page 6)"
+            },
+            {
+                learningObjective: "LO 2 (Genetic Code & Translation): Summarize molecular events taking place in the three steps of translation: initiation, elongation, and termination and discuss the regulation of protein synthesis in eukaryotic cells.",
+                question: "In prokaryotic translation initiation, the small ribosomal subunit (30S) is positioned correctly on the mRNA by the base pairing of a sequence on the 16S rRNA with a specific site on the mRNA, located just upstream of the start codon. What is this mRNA site called?",
+                options: { 
+                    A: "The Kozak sequence", 
+                    B: "The Pribnow box", 
+                    C: "The Shine-Dalgarno sequence", 
+                    D: "The poly(A) tail" 
+                },
+                correctAnswer: "C",
+                rationale: "The Shine-Dalgarno sequence (also known as the ribosome binding site or RBS) is a purine-rich sequence on the prokaryotic mRNA. It is complementary to a sequence at the 3' end of the 16S rRNA in the 30S ribosomal subunit. This interaction correctly positions the ribosome so that the start codon (AUG) is in the P-site.",
+                source: "'In prokaryotes base pairing of the 16S rRNA with Shine-Dalgarno sequence (RBS) positions first AUG in P site.' (Genetic Code & Translation, Page 19)"
+            },
+            {
+                learningObjective: "LO 2 (Genetic Code & Translation): Summarize molecular events taking place in the three steps of translation: initiation, elongation, and termination and discuss the regulation of protein synthesis in eukaryotic cells.",
+                question: "During the elongation phase of translation, the formation of the peptide bond between the incoming amino acid and the growing polypeptide chain is catalyzed by which of the following?",
+                options: { 
+                    A: "An elongation factor protein (e.g., eEF1A)", 
+                    B: "The small ribosomal subunit's rRNA (18S or 16S)", 
+                    C: "The large ribosomal subunit's rRNA (28S or 23S)", 
+                    D: "Aminoacyl-tRNA synthetase" 
+                },
+                correctAnswer: "C",
+                rationale: "The peptidyl transferase activity, which catalyzes peptide bond formation, is not performed by a protein but is an intrinsic property of the ribosomal RNA (rRNA) of the large subunit. This discovery led to the concept of the ribosome as a ribozyme. In eukaryotes, this is the 28S rRNA, and in prokaryotes, it is the 23S rRNA.",
+                source: "'Catalyzes the formation of peptide bond. Catalytic function is attributed to the large rRNA (23S/28S rRNA).' (Genetic Code & Translation, Page 11)"
+            },
+            {
+                learningObjective: "LO 2 (Genetic Code & Translation): Summarize molecular events taking place in the three steps of translation: initiation, elongation, and termination and discuss the regulation of protein synthesis in eukaryotic cells.",
+                question: "A patient with iron deficiency anemia would be expected to have increased synthesis of the transferrin receptor to enhance iron uptake. This regulation occurs at the translational level. Under low iron conditions, an Iron Response Protein (IRP) binds to an Iron Response Element (IRE) in the transferrin receptor mRNA. Where is this IRE located, and what is the effect of IRP binding?",
+                options: { 
+                    A: "In the 5' UTR, blocking translation", 
+                    B: "In the 5' UTR, enhancing translation", 
+                    C: "In the 3' UTR, stabilizing the mRNA", 
+                    D: "In the 3' UTR, promoting mRNA degradation" 
+                },
+                correctAnswer: "C",
+                rationale: "The transferrin receptor is needed when iron is low. Its mRNA has IREs in the 3' untranslated region (UTR). In low iron, the IRP binds to these 3' UTR IREs. This binding protects the mRNA from degradation by endonucleases, thus stabilizing the message, increasing its half-life, and allowing more transferrin receptor protein to be synthesized.",
+                source: "'If the IRE is on the 3' UTR of the mRNA, binding of IRP will prevent the degradation of the mRNA, thus permitting more protein to be synthesized from the mRNA.' (The corresponding diagram shows this leads to increased Protein Y, the transferrin receptor). (Genetic Code & Translation, Page 26)"
+            },
+            {
+                learningObjective: "LO 3 (Genetic Code & Translation): Explain the mechanism by which viruses hijack the host’s translational machinery to enhance the synthesis of viral proteins.",
+                question: "Poliovirus infection leads to a rapid shutdown of host cell protein synthesis while allowing for the efficient translation of its own viral proteins. The poliovirus achieves this by producing a protease that cleaves which key eukaryotic initiation factor, thereby disabling cap-dependent translation?",
+                options: { 
+                    A: "eIF2", 
+                    B: "eIF4G", 
+                    C: "eIF3", 
+                    D: "eIF5" 
+                },
+                correctAnswer: "B",
+                rationale: "Many viruses, including poliovirus, shut off host cell translation to commandeer the ribosomes for their own use. Poliovirus protease specifically cleaves eIF4G, a large scaffolding protein that is part of the eIF4F cap-binding complex. Cleavage of eIF4G prevents the ribosome from recognizing the 5' cap of host mRNAs. The viral mRNA is then translated via a cap-independent mechanism using an Internal Ribosome Entry Site (IRES).",
+                source: "'...poliovirus has a protease which specifically cuts eIF4G and poly(A)-binding protein (PABP) inhibits cap-dependent translation initiation.' (Genetic Code & Translation, Page 28)"
+            },
+            {
+                learningObjective: "LO 3 (Genetic Code & Translation): Explain the mechanism by which viruses hijack the host’s translational machinery to enhance the synthesis of viral proteins.",
+                question: "Some viral mRNAs lack a 5' cap but can still be translated efficiently in eukaryotic cells. They contain a specific RNA structure that allows for the direct recruitment of the ribosome to a location near the start codon, bypassing the need for the cap-binding complex. What is this RNA structure called?",
+                options: { 
+                    A: "Shine-Dalgarno sequence", 
+                    B: "Kozak sequence", 
+                    C: "Internal Ribosome Entry Site (IRES)", 
+                    D: "Iron Response Element (IRE)" 
+                },
+                correctAnswer: "C",
+                rationale: "An Internal Ribosome Entry Site (IRES) is a complex secondary structure within the 5' UTR of certain viral (and some cellular) mRNAs. It acts as a landing pad for the ribosome, allowing it to assemble directly at an internal location on the mRNA and initiate translation without first recognizing the 5' cap. This is a key strategy for viruses that shut down host cap-dependent translation.",
+                source: "'The viral mRNA is translated because it has, what are called an internal ribosome entry site (IRES) where the ribosome can bind and start translating the viral mRNA... independent of cap-dependent translation.' (Genetic Code & Translation, Page 28)"
+            },
+            {
+                learningObjective: "LO 3 (Genetic Code & Translation): Explain the mechanism by which viruses hijack the host’s translational machinery to enhance the synthesis of viral proteins.",
+                question: "In response to a viral infection, a host cell can phosphorylate the alpha subunit of the initiation factor eIF2. What is the direct consequence of eIF2 phosphorylation on global protein synthesis?",
+                options: { 
+                    A: "It enhances the translation of all mRNAs.", 
+                    B: "It specifically inhibits the translation of viral mRNAs.", 
+                    C: "It blocks the recycling of eIF2-GDP to eIF2-GTP, shutting down most translation initiation.", 
+                    D: "It causes the ribosome to stall during the elongation phase." 
+                },
+                correctAnswer: "C",
+                rationale: "Phosphorylation of eIF2 is a key cellular stress response. Phosphorylated eIF2-GDP binds very tightly to its guanine nucleotide exchange factor, eIF2B, sequestering it and preventing it from recycling other eIF2 molecules back to their active, GTP-bound state. Since eIF2B is present in limiting amounts, this effectively shuts down the initiation of both host and viral protein synthesis.",
+                source: "'Phosphorylation of Ser in the a subunit of eIF2 interferes with the exchange of GDP with GTP... Phosphorylated alpha subunit of eIF2 chelates the limited number of eIF2B available in the cell and blocks global translation.' (Genetic Code & Translation, Page 24)"
+            },
+            {
+                learningObjective: "LO 4 (Genetic Code & Translation): Identify the subcellular sites of protein synthesis and explain the main events in the posttranslational processing of proteins.",
+                question: "A protein destined for secretion from the cell, such as insulin, begins its synthesis on a free ribosome in the cytoplasm. However, its synthesis is completed at a different location. The presence of what feature directs the entire ribosome-mRNA complex to the surface of the endoplasmic reticulum?",
+                options: { 
+                    A: "A C-terminal KDEL sequence", 
+                    B: "An N-terminal hydrophobic signal sequence", 
+                    C: "A nuclear localization signal (NLS)", 
+                    D: "A poly(A) tail on the mRNA" 
+                },
+                correctAnswer: "B",
+                rationale: "Proteins destined for the secretory pathway (ER, Golgi, lysosomes, plasma membrane, or secretion) contain an N-terminal signal sequence, which is a stretch of about 20 hydrophobic amino acids. As this sequence emerges from the ribosome, it is recognized by the signal recognition particle (SRP), which halts translation and targets the whole complex to the ER membrane, where translation resumes and the protein is co-translationally imported into the ER lumen.",
+                source: "'These proteins have a hydrophobic signal sequence in the approximately first 20 AA residues, which allows that region of the protein molecule to pass through the plasma membrane.' (The context is proteins destined for the ER). (Genetic Code & Translation, Page 31)"
+            },
+            {
+                learningObjective: "LO 4 (Genetic Code & Translation): Identify the subcellular sites of protein synthesis and explain the main events in the posttranslational processing of proteins.",
+                question: "A newly synthesized protein is observed to be undergoing folding into its correct three-dimensional conformation. This process is being assisted by a multi-subunit, barrel-shaped protein complex that uses ATP. This helper protein is most likely a:",
+                options: { 
+                    A: "Ribosome", 
+                    B: "Proteasome", 
+                    C: "Chaperonin", 
+                    D: "Lysosome" 
+                },
+                correctAnswer: "C",
+                rationale: "While some small proteins can fold spontaneously, many larger proteins require assistance to fold correctly and avoid aggregation. Chaperones and chaperonins are helper proteins that bind to nascent or unfolded polypeptides and facilitate their proper folding, often in an ATP-dependent manner. Chaperonins, like the GroEL/GroES complex, form a large, barrel-like structure that provides an isolated environment for a single polypeptide to fold.",
+                source: "'Helper proteins called chaperones and chaperonins (also called heat-shock proteins) help in the folding of the nascent protein in the right confirmation.' (Genetic Code & Translation, Page 30)"
+            },
+            {
+                learningObjective: "LO 4 (Genetic Code & Translation): Identify the subcellular sites of protein synthesis and explain the main events in the posttranslational processing of proteins.",
+                question: "A lysosomal hydrolase is synthesized in the rough ER and transported through the Golgi apparatus. For it to be correctly targeted from the Golgi to the lysosome, it must undergo a specific post-translational modification that serves as a sorting signal. What is this modification?",
+                options: { 
+                    A: "Addition of a KDEL sequence", 
+                    B: "Phosphorylation of mannose residues to mannose-6-phosphate", 
+                    C: "Attachment of a GPI anchor", 
+                    D: "N-terminal formylation" 
+                },
+                correctAnswer: "B",
+                rationale: "The 'tag' that directs soluble enzymes from the trans-Golgi network to the lysosome is mannose-6-phosphate (M6P). In the cis-Golgi, specific mannose residues on the N-linked oligosaccharides of lysosomal enzymes are phosphorylated. This M6P tag is then recognized by M6P receptors in the trans-Golgi, which package the enzymes into vesicles destined for the lysosome. A defect in this process causes I-cell disease.",
+                source: "The diagram on page 31 shows the pathway for lysosomal proteins involving 'Mann 6-PO4' and indicates that a defect leads to 'I-cell disease'. (Genetic Code & Translation, Page 31)"
+            }
+        ];
+
+
+        const quizContainer = document.getElementById('quiz-container');
+        const themeToggleButton = document.getElementById('theme-toggle-button');
+        const bodyElement = document.body;
+
+        function applyTheme(theme) {
+            if (theme === 'light') {
+                bodyElement.classList.add('light-theme');
+                themeToggleButton.textContent = 'Switch to Dark Mode';
+            } else {
+                bodyElement.classList.remove('light-theme');
+                themeToggleButton.textContent = 'Switch to Light Mode';
+            }
+            localStorage.setItem('quizTheme', theme);
+        }
+
+        function loadQuiz() {
+            quizData.forEach((qData, index) => {
+                const questionBlock = document.createElement('div');
+                questionBlock.classList.add('question-block');
+                questionBlock.id = `q${index}`;
+
+                const loText = document.createElement('div');
+                loText.classList.add('learning-objective');
+                loText.textContent = qData.learningObjective;
+                questionBlock.appendChild(loText);
+
+                const questionText = document.createElement('p');
+                questionText.classList.add('question-text');
+                questionText.innerHTML = `${index + 1}. ${qData.question}`;
+                questionBlock.appendChild(questionText);
+
+                const optionsDiv = document.createElement('div');
+                optionsDiv.classList.add('options');
+
+                for (const optionKey in qData.options) {
+                    const optionId = `q${index}_${optionKey}`;
+                    const label = document.createElement('label');
+                    label.htmlFor = optionId;
+                    const radioInput = document.createElement('input');
+                    radioInput.type = 'radio';
+                    radioInput.name = `q${index}`;
+                    radioInput.value = optionKey;
+                    radioInput.id = optionId;
+                    const labelText = document.createElement('span');
+                    labelText.textContent = ` ${optionKey}. ${qData.options[optionKey]}`;
+                    label.appendChild(radioInput);
+                    label.appendChild(labelText);
+                    optionsDiv.appendChild(label);
+                }
+                questionBlock.appendChild(optionsDiv);
+
+                const buttonContainer = document.createElement('div');
+                buttonContainer.classList.add('button-container');
+
+                const checkButton = document.createElement('button');
+                checkButton.textContent = 'Check Answer';
+                checkButton.classList.add('check-button');
+                checkButton.onclick = () => checkAnswer(index);
+                buttonContainer.appendChild(checkButton);
+                
+                questionBlock.appendChild(buttonContainer);
+
+                const feedbackDiv = document.createElement('div');
+                feedbackDiv.classList.add('feedback');
+                questionBlock.appendChild(feedbackDiv);
+
+                quizContainer.appendChild(questionBlock);
+            });
+        }
+
+        function checkAnswer(questionIndex) {
+            const questionBlockElement = document.getElementById(`q${questionIndex}`);
+            const selectedRadioButton = questionBlockElement.querySelector('input[type="radio"]:checked');
+
+            if (!selectedRadioButton) {
+                alert("Please select an answer first.");
+                return;
+            }
+
+            const selectedOptionKey = selectedRadioButton.value;
+            const qData = quizData[questionIndex];
+            const feedbackDiv = questionBlockElement.querySelector('.feedback');
+            const correct = selectedOptionKey === qData.correctAnswer;
+
+            let feedbackHTML = '';
+
+            if (correct) {
+                feedbackHTML = `<span class="feedback-status">Correct!</span>`;
+                feedbackDiv.className = 'feedback correct';
+            } else {
+                 feedbackHTML = `<span class="feedback-status">Incorrect.</span> The correct answer is ${qData.correctAnswer}.`;
+                feedbackDiv.className = 'feedback incorrect';
+            }
+
+            feedbackHTML += `<div class="feedback-rationale"><strong>Rationale:</strong> ${qData.rationale}</div>`;
+            feedbackHTML += `<div class="feedback-source">${qData.source}</div>`;
+            feedbackDiv.innerHTML = feedbackHTML;
+        }
+
+        themeToggleButton.addEventListener('click', () => {
+            if (bodyElement.classList.contains('light-theme')) {
+                applyTheme('dark');
+            } else {
+                applyTheme('light');
+            }
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const savedTheme = localStorage.getItem('quizTheme') || 'dark';
+            applyTheme(savedTheme);
+            loadQuiz();
+        });
+
+    </script>
+
+</body>
+</html>
